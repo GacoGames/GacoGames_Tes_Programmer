@@ -32,7 +32,6 @@ namespace GacoGames.QuestSystem
         //Playerprefs Key
         public static string QUEST_ONGOING = "QUEST_ONGOING";
         public static string QUEST_COMPLETED = "QUEST_COMPLETED";
-        public static string QUEST_TRACKED = "QUEST_TRACK";
 
         [SerializeField] 
         private QuestDatabase database;
@@ -42,8 +41,6 @@ namespace GacoGames.QuestSystem
         public List<QuestRecord> completedMainQuests;
         [ReadOnly, FoldoutGroup("Quest Progression")]
         public List<QuestRecord> completedSideQuests;
-        [ReadOnly, FoldoutGroup("Quest Progression")]
-        public QuestChain trackedQuest;
         [ReadOnly, FoldoutGroup("Quest Progression")]
         public Dictionary<string, List<string>> allQuestTargets;
 
@@ -57,7 +54,7 @@ namespace GacoGames.QuestSystem
 
             LoadQuestProgression();
         }
-        [ButtonGroup("Quest Progression/btn"), Button("Load")]
+        // [ButtonGroup("Quest Progression/btn"), Button("Load")]
         private void LoadQuestProgression()
         {
             //Loads all quests that has been received by players
@@ -75,16 +72,9 @@ namespace GacoGames.QuestSystem
             string completed = PlayerPrefs.GetString(QUEST_COMPLETED);
             completedMainQuests = JsonConvert.DeserializeObject<List<QuestRecord>>(completed, jsonSettings);
 
-            if (PlayerPrefs.HasKey(QUEST_TRACKED))
-            {
-                string tracked = PlayerPrefs.GetString(QUEST_TRACKED);
-                trackedQuest = database.GetQuest(tracked);
-                OnQuestChainReceive?.Invoke(trackedQuest);
-            }
-
             BuildTargetList();
         }
-        [ButtonGroup("Quest Progression/btn"), Button("Save")]
+        // [ButtonGroup("Quest Progression/btn"), Button("Save")]
         private void SaveQuestProgression()
         {
             var jsonSettings = new JsonSerializerSettings
@@ -162,8 +152,6 @@ namespace GacoGames.QuestSystem
             {
                 ongoingQuests.Add(quest.questChainId, new QuestInstance(quest));
                 BuildTargetList();
-
-                trackedQuest = quest;
 
                 OnQuestChainReceive?.Invoke(quest);
             }
@@ -401,13 +389,4 @@ namespace GacoGames.QuestSystem
         public string id;
         public DateTime completed;
     }
-    [Serializable]
-    public struct CreateQuestMarkerRequest
-    {
-        public string guid;
-        public string objectId;
-        public Transform holder;
-        // public QuestType questType;
-    }
-
 }
