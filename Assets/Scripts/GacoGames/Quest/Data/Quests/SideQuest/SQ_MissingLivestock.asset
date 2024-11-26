@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b3b0d45b8765eb4082f37fa79e8b358, type: 3}
+  m_Name: SQ_MissingLivestock
+  m_EditorClassIdentifier: 
+  questChainId: SQ_MissingLivestock
+  tab: 1
+  quests:
+  - summary: Investigate the fields at night.
+    _objectives:
+    - task: 3
+      targetId: nina
+      requiredAmount: 1
+      customDescriptionId: 
+    - task: 0
+      targetId: boar
+      requiredAmount: 3
+      customDescriptionId: 
+  - summary: Follow the tracks of the Shadows. It must lead to their secret hideout.
+    _objectives:
+    - task: 0
+      targetId: boar
+      requiredAmount: 10
+      customDescriptionId: 
+  - summary: Defeat all the Shadows in their secret hideout and end this nightmare
+      for good!
+    _objectives:
+    - task: 0
+      targetId: shadow
+      requiredAmount: 5
+      customDescriptionId: 
+  - summary: Return to the villager and report about your findings.
+    _objectives:
+    - task: 1
+      targetId: beast
+      requiredAmount: 10
+      customDescriptionId: 
+  - summary: Talk to the Chief's daughter and propose to her.
+    _objectives:
+    - task: 5
+      targetId: iron
+      requiredAmount: 5
+      customDescriptionId: 
+  requiredQuests:
+  - {fileID: 11400000, guid: 76e68431fb15ddc4b950c7ffa1685b09, type: 2}
+  receiveRewardSilently: 0

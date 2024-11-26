@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e9356702d3342e45936d9419021de3a, type: 3}
+  m_Name: MQ_001_Repair_Artifact
+  m_EditorClassIdentifier: 
+  questChainId: MQ_001_Repair_Artifact
+  tab: 0
+  quests:
+  - summary: find repair kit
+    _objectives:
+    - task: 5
+      targetId: repairkit
+      requiredAmount: 1
+      customDescriptionId: 
+  - summary: go to kades house
+    _objectives:
+    - task: 4
+      targetId: house
+      requiredAmount: 5
+      customDescriptionId: 
+  - summary: talk to his daughter
+    _objectives:
+    - task: 3
+      targetId: nia
+      requiredAmount: 1
+      customDescriptionId: 
+  requiredQuests: []
+  receiveRewardSilently: 0
