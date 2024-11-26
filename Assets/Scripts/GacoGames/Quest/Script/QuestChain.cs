@@ -8,7 +8,6 @@ namespace GacoGames.QuestSystem
 {
     public abstract class QuestChain : ScriptableObject
     {
-        public virtual QuestCategory QuestChainType { get; }
         public string QuestChainTitle => LocalizationManager.GetTranslation($"quest/{questChainId}/title");
         public string QuestChainSummary => LocalizationManager.GetTranslation($"quest/{questChainId}/summary");
         public List<Quest> Quests => quests;
@@ -114,13 +113,5 @@ namespace GacoGames.QuestSystem
     {
         Info,
         Setup
-    }
-
-    public enum QuestCategory
-    {
-        MainQuest,
-        SideQuest,
-        SpecialQuest,
-        EventQuest
     }
 }

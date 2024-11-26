@@ -58,7 +58,7 @@ namespace GacoGames.QuestSystem
         private void LoadQuestProgression()
         {
             //Loads all quests that has been received by players
-            //Even completed quests, as they can be used for archives
+            //Also loads completed quests, as they can be used for archives
             var jsonSettings = new JsonSerializerSettings
             {
                 Formatting = Formatting.None,
@@ -139,10 +139,11 @@ namespace GacoGames.QuestSystem
             //duplicate quest might happen due to editorial human error, or probably some backend issue.
             allQuestTargets ??= new Dictionary<string, List<string>>();
             ongoingQuests ??= new Dictionary<string, QuestInstance>();
-            bool duplicate = ongoingQuests.ContainsKey(quest.questChainId);
 
+            bool duplicate = ongoingQuests.ContainsKey(quest.questChainId);
             bool alreadyCompleted = IsQuestCompleted(quest.questChainId);
-            if (alreadyCompleted)
+
+            if (IsQuestCompleted(quest.questChainId))
             {
                 Debug.Log($"Quest {quest.questChainId} has been completed.");
                 return;
@@ -160,7 +161,7 @@ namespace GacoGames.QuestSystem
         {
             if (!allQuestTargets.ContainsKey(objectId))
             {
-                //Debug.Log($"{objectId} is not a target of any ongoing Quest.");
+                Debug.Log($"{objectId} is not a target of any ongoing Quest.");
                 return;
             }
 
@@ -174,13 +175,13 @@ namespace GacoGames.QuestSystem
         {
             if (!allQuestTargets.ContainsKey(objectId))
             {
-                //Debug.Log($"{objectId} is not a target of any ongoing Quest.");
+                Debug.Log($"{objectId} is not a target of any ongoing Quest.");
                 return;
             }
 
             if (!ongoingQuests.ContainsKey(questChainId))
             {
-                //Debug.Log($"{questChainId} is not an active Quest.");
+                Debug.Log($"{questChainId} is not an active Quest.");
                 return;
             }
 
@@ -232,12 +233,12 @@ namespace GacoGames.QuestSystem
 
                 if (progress.questIndex >= questChain.Quests.Count)
                 {
-                    //Is actually the final quest. Complete QuestChain.
+                    //Complete QuestChain.
                     completedMainQuests ??= new List<QuestRecord>();
+                    completedSideQuests ??= new List<QuestRecord>();
+
                     completedMainQuests.Add(new QuestRecord(questId));
                     ongoingQuests.Remove(questId);
-
-                    QuestChainReward(questChain);
 
                     OnQuestChainComplete?.Invoke(questChain);
                 }
@@ -254,11 +255,6 @@ namespace GacoGames.QuestSystem
             }
 
             BuildTargetList();
-        }
-        private void QuestChainReward(QuestChain qc)
-        {
-            //Notify rewards (no items added to inventory)
-            Debug.Log($"Quest {qc.questChainId} has been completed.");
         }
         #endregion
 
