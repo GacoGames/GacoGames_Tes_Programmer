@@ -32,6 +32,7 @@ namespace GacoGames.QuestSystem
         //Playerprefs Key
         public static string QUEST_ONGOING = "QUEST_ONGOING";
         public static string QUEST_COMPLETED = "QUEST_COMPLETED";
+        public static string QUEST_COMPLETED_SIDE = "QUEST_COMPLETED_SIDE";
 
         [SerializeField] 
         private QuestDatabase database;
@@ -72,6 +73,9 @@ namespace GacoGames.QuestSystem
             string completed = PlayerPrefs.GetString(QUEST_COMPLETED);
             completedMainQuests = JsonConvert.DeserializeObject<List<QuestRecord>>(completed, jsonSettings);
 
+            string completedSq = PlayerPrefs.GetString(QUEST_COMPLETED_SIDE);
+            completedSideQuests = JsonConvert.DeserializeObject<List<QuestRecord>>(completedSq, jsonSettings);
+
             BuildTargetList();
         }
         // [ButtonGroup("Quest Progression/btn"), Button("Save")]
@@ -106,7 +110,7 @@ namespace GacoGames.QuestSystem
                 {
                     Quest quest = questChain.Quests[i];
 
-                    if (questProgress.Value.questIndex != i) continue; //only list target in active quest
+                    if (questProgress.Value.activeQuestIndex != i) continue; //only list target in active quest
 
                     for (int j = 0; j < quest.Objectives.Count; j++)
                     {
@@ -189,7 +193,7 @@ namespace GacoGames.QuestSystem
             QuestInstance progress = ongoingQuests[questChainId];
 
             //Get QuestChain's active quest
-            Quest currentQuest = questChain.Quests[progress.questIndex];
+            Quest currentQuest = questChain.Quests[progress.activeQuestIndex];
 
             //find objective with the targetid
             int index = currentQuest.Objectives.FindIndex(objective => objective.QuestTarget == objectId);
@@ -215,7 +219,7 @@ namespace GacoGames.QuestSystem
         {
             QuestChain questChain = database.GetQuest(questId);
             QuestInstance progress = ongoingQuests[questId];
-            Quest currentQuest = questChain.Quests[progress.questIndex];
+            Quest currentQuest = questChain.Quests[progress.activeQuestIndex];
 
             int sum = 0;
             for (int i = 0; i < progress.objectiveProgress.Count; i++)
@@ -229,9 +233,9 @@ namespace GacoGames.QuestSystem
             if (sum >= progress.objectiveProgress.Count)
             {
                 //proceed to next quest in current QuestChain
-                progress.questIndex++;
+                progress.activeQuestIndex++;
 
-                if (progress.questIndex >= questChain.Quests.Count)
+                if (progress.activeQuestIndex >= questChain.Quests.Count)
                 {
                     //Complete QuestChain.
                     completedMainQuests ??= new List<QuestRecord>();
@@ -245,12 +249,12 @@ namespace GacoGames.QuestSystem
                 else
                 {
                     //build objective progress container for the next Quest
-                    currentQuest = questChain.Quests[progress.questIndex];
+                    currentQuest = questChain.Quests[progress.activeQuestIndex];
                     progress.objectiveProgress.Clear();
                     foreach (var _ in currentQuest.Objectives)
                         progress.objectiveProgress.Add(0);
 
-                    OnProceedNextQuest?.Invoke(questChain.Quests[progress.questIndex]);
+                    OnProceedNextQuest?.Invoke(questChain.Quests[progress.activeQuestIndex]);
                 }
             }
 
@@ -317,7 +321,7 @@ namespace GacoGames.QuestSystem
 
             foreach (var progress in questProgress)
             {
-                Quest quest = database.GetQuest(progress.questChainId).Quests[progress.questIndex];
+                Quest quest = database.GetQuest(progress.questChainId).Quests[progress.activeQuestIndex];
                 quests.Add(quest);
             }
 
@@ -359,6 +363,7 @@ namespace GacoGames.QuestSystem
     [Serializable]
     public class QuestInstance
     {
+        //this class only stores a questchain's progression data
         public QuestInstance() { }
         public QuestInstance(QuestChain quest)
         {
@@ -370,8 +375,8 @@ namespace GacoGames.QuestSystem
         }
 
         public string questChainId;
-        public int questIndex;
-        public List<int> objectiveProgress;
+        public int activeQuestIndex;  //index of active quest in QuestChain
+        public List<int> objectiveProgress; //progression of each objective in active quest
     }
     [Serializable]
     public class QuestRecord
